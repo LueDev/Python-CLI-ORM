@@ -19,7 +19,6 @@ Python CLI ORM is a powerful command-line interface tool for managing guest and 
 - **Command-Line Interface:**
 
   - User-friendly interface with clear and concise menu options.
-  - Stylish ASCII art and formatted text for enhanced visual appeal.
 
 - **ORM Integration:**
   - Seamlessly integrates with an ORM framework for database interaction.
