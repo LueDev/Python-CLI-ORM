@@ -6,7 +6,6 @@ from models.guest import *
 from models.hotel import *
 import os
 from helpers import *
-import time
 
 clear_history_cli()
 
