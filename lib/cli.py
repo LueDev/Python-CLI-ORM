@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from re import L
 import click
 from models.guest import *
 from models.hotel import *
@@ -91,6 +92,9 @@ def update_hotel(id: int = None, name:str = None, location: str = None):
         styled_dashes_text("Updating a hotel")
         print(all_hotels_in_db()) if id == None else None
         hotel_selected = Hotel.find_by_id(click.prompt("\nEnter the hotel id from the list of available hotels above", type=int)) if id == None else Hotel.find_by_id(int(id))
+        while hotel_selected not in Hotel.get_all():
+            click.echo("That hotel is not in our db. Please re-enter the id for an existing hotel")
+            hotel_selected = Hotel.find_by_id(click.prompt("\nEnter the hotel id from the list of available hotels above", type=int)) if id == None else Hotel.find_by_id(int(id))
         click.echo(f"Hotel Selected: {hotel_selected}") if name == None else None
         new_hotel_name = input(f"\nEnter the new name for the Hotel selected: {hotel_selected}: ") if name == None else name
         new_hotel_location = input(f"\nEnter the new location for the Hotel selected: {hotel_selected}: ") if location == None else location
@@ -142,6 +146,7 @@ def search_hotel_by_id(id):
     
     @clear_screen("Found Entry For Hotel Searched By ID")
     def wrapper():
+        print(all_hotels_in_db())
         return Hotel.find_by_id(click.prompt("\nEnter the ID of the hotel to search", type=int)) if id == None else Hotel.find_by_id(int(id))
 
     return wrapper()
@@ -156,7 +161,7 @@ def create_guest(id=None, name=None):
     def wrapper():
         styled_dashes_text("Creating a guest")
         print(all_hotels_in_db(), end="\n\n") if id == None else None
-        guest_hotel_id = click.prompt("Enter the ID of the hotel, the guest is staying at", type=int) if id == None else int(id)
+        guest_hotel_id = click.prompt("Enter the ID of the hotel the guest is staying at", type=int) if id == None else int(id)
         guest_name = click.prompt("\nEnter the name of the guest", type=str) if name == None else name
         return Guest.create(guest_name, guest_hotel_id)
     return wrapper()
@@ -174,9 +179,17 @@ def update_guest(gid:int=None, hid:int=None, name:str=None):
         styled_dashes_text("Updating A Guest")
         print(all_guests_in_db(), end="\n\n") if gid == None else None
         guest = Guest.find_by_id(click.prompt("Enter the ID of the guest you want to update", type=int)) if hid == None else Guest.find_by_id(int(hid))
+        while guest not in Guest.get_all():
+            click.echo("\nThat guest ID is not in our db. Please enter an existing guest ID from the list of guests above.")
+            guest = Guest.find_by_id(click.prompt("Enter the ID of the guest you want to update", type=int)) 
         guest_name = click.prompt("\nEnter the updated name of the guest", type=str) if name == None else name
         print(all_hotels_in_db(), end="\n\n") if hid == None else None
         guest_hotel_id = click.prompt("\nEnter the updated ID of the hotel our guest is staying at", type=int) if hid == None else int(hid)
+        found_hotel = Hotel.find_by_id(guest_hotel_id)
+        while found_hotel not in Hotel.get_all():
+            click.echo("\nThat hotel is not in our db. Please enter a hotel ID from the list of hotels above.")
+            guest_hotel_id = click.prompt("Enter the ID of the hotel you are looking for", type=int) 
+            found_hotel = Hotel.find_by_id(guest_hotel_id)
         return guest.update(guest_name, guest_hotel_id)
     
     return wrapper()
@@ -191,9 +204,13 @@ def delete_guest(id=None):
     def wrapper():
         styled_dashes_text("Deleting A Guest")
         print(all_guests_in_db(), end="\n\n") if id == None else None
-        guest = Guest.find_by_id(click.prompt("Enter the ID of the guest you want to delete", type=int)) if id == None else Guest.find_by_id(int(id))
-        guest.delete()
-        return guest
+        guest_search = click.prompt("Enter the ID of the guest you want to delete", type=int) if id == None else Guest.find_by_id(int(id))
+        found_guest = Guest.find_by_id(guest_search)
+        while found_guest not in Guest.get_all():
+            click.echo("\nThat guest is not in our db. Please enter a guest ID from the list of guests above.")
+            guest_search = click.prompt("Enter the ID of the guest you want to delete", type=int)
+            found_guest = Guest.find_by_id(guest_search)
+        return found_guest if found_guest != None else f"No results found for {guest_search}"
 
     return wrapper()
 
@@ -217,8 +234,13 @@ def search_for_guest_by_id(id=None):
     def wrapper():
         styled_dashes_text("Searching A Guest By ID")
         print(all_guests_in_db(), end="\n\n")
-        guest = Guest.find_by_id(click.prompt("Enter the ID of the guest you are searching for", type=int)) if id == None else Guest.find_by_id(int(id)) 
-        return guest
+        guest_search = click.prompt("Enter the ID of the guest you are searching for", type=int) if id == None else Guest.find_by_id(int(id))
+        found_guest = Guest.find_by_id(guest_search)
+        while found_guest not in Guest.get_all():
+            click.echo("\nThat guest is not in our db. Please enter a guest ID from the list of guests above.")
+            guest_search = click.prompt("Enter the name of the guest you are searching for", type=int)
+            found_guest = Guest.find_by_id(guest_search)
+        return found_guest if found_guest != None else f"No result found for {guest_search}"
     
     return wrapper() 
 
@@ -230,28 +252,29 @@ def search_for_guest_by_name(name=None):
     @clear_screen("Found Entries For Guest Searched By Name")
     def wrapper():
         styled_dashes_text("Searching A Guest By Name")
+        print(all_guests_in_db())
         guest_name_to_search = input("\nEnter the name of the guest: ") if name == None else name
         guest_matches = ""
         for index, entry in enumerate(fuzzy_match(guest_name_to_search, Guest.get_all())):
             guest_matches += f"{index+1}. {entry}\n"
-        return guest_matches
+        return guest_matches if len(guest_matches) > 0 else "No guests found by that name"
     
     return wrapper()
 
 @cli.command()
 @click.option('--id', default=None, help='ID of hotel to return all guests from')
-def search_for_guests_from_one_hotel(name:str=None):
+def search_for_guests_from_one_hotel(id:int=None):
     """Displays all guests for a single hotel """
     
     @clear_screen("Found Entries For Guests Within One Hotel")
     def wrapper():
         styled_dashes_text("Displaying All Guests Within One Hotel")
         print(all_hotels_in_db())
-        hotel = Hotel.find_by_id(click.prompt("\nSelect the hotel to check their guest list", type=int))
+        hotel = Hotel.find_by_id(click.prompt("\nSelect the hotel by ID to check their guest list", type=int)) if id == None else int(id)
         guest_matches = ""
         for index, entry in enumerate(hotel.guests()):
             guest_matches += f"{index+1}. {entry}\n"
-        return guest_matches
+        return guest_matches if len(guest_matches) > 0 else "No guests found for this hotel"
     
     return wrapper() 
 
