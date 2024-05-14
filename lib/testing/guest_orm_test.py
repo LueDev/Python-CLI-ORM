@@ -115,8 +115,7 @@ class TestGuest:
         Guest.create_table()
 
         guest1 = Guest.create("Raha", hotel1.id)
-        guest2 = Guest.create(
-            "Tal", hotel2.id)
+        guest2 = Guest.create("Tal", hotel2.id)
         id1 = guest1.id
         id2 = guest2.id
         guest1.name = "Raha Lee"

@@ -27,8 +27,9 @@ def display_menu():
     click.echo("11. Search for a guest by Name")
     click.echo("12. Display all guests")
     click.echo("13. Display all guests within one hotel")
-    click.echo("14. Exit Program")
-    
+    click.echo("14. Search for guests by name length")
+    click.echo("15. Exit Program")
+        
     choice = input("\nEnter your choice: ")
     return choice
 
@@ -81,7 +82,7 @@ def styled_dashes_text(text):
     text_length = len(text)
     
     # Calculate the number of dashes needed on each side
-    dashes_needed = (50 - text_length) // 2
+    dashes_needed = (64 - text_length) // 2
     
     # Create a string of dashes
     dashes = '-' * dashes_needed

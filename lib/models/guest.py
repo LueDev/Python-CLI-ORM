@@ -172,3 +172,9 @@ class Guest:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def find_by_name_length(cls, length):
+        """Return a list of guests whose name length is less than or equal to the length parameter"""
+
+        return [guest for guest in cls.get_all() if len(guest.name) <= length]

@@ -100,7 +100,7 @@ class Hotel:
 
     def delete(self):
         """Delete the table row corresponding to the current Hotel instance,
-        delete the dictionary entry, and reassign id attribute"""
+        delete the dictionary entry, and reassign id attribute"""  
 
         sql = """
             DELETE FROM hotels
