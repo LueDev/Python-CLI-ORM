@@ -1,1 +1,10 @@
+<<<<<<< HEAD
 {}
+=======
+{
+  "testing/department_orm_test.py": true,
+  "testing/department_property_test.py": true,
+  "Class Guest in guest.py validates job_title property is assigned a string": true,
+  "Class Guest in guest.py validates job_title property length > 0": true
+}
+>>>>>>> 8460201676b05b7138612dc797f0bd6a52b651f6

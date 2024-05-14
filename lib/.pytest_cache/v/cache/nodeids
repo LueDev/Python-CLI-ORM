@@ -12,9 +12,18 @@
   "Class Guest in guest.py test_hotel_property",
   "Class Guest in guest.py test_hotel_property_fk",
   "Class Guest in guest.py test_hotel_property_type",
+<<<<<<< HEAD
   "Class Guest in guest.py validates name and hotel id are valid",
   "Class Guest in guest.py validates name property is assigned a string",
   "Class Guest in guest.py validates name property length > 0",
+=======
+  "Class Guest in guest.py validates job_title property is assigned a string",
+  "Class Guest in guest.py validates job_title property length > 0",
+  "Class Guest in guest.py validates name and hotel id are valid",
+  "Class Guest in guest.py validates name property is assigned a string",
+  "Class Guest in guest.py validates name property length > 0",
+  "Class Guest in guest.py validates name, job title, hotel id are valid",
+>>>>>>> 8460201676b05b7138612dc797f0bd6a52b651f6
   "Class Hotel in hotel.py contain a method \"guests\" that gets the guests for the current Hotel instance",
   "Class Hotel in hotel.py contains a method \"delete()\" that deletes the instance's corresponding db row",
   "Class Hotel in hotel.py contains a method \"update()\" that updates an instance's corresponding db row to match its new attribute values.",
