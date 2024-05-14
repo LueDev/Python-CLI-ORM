@@ -4,7 +4,7 @@ import click
 
 @click.group()
 def cli():
-    '''When arguments for this function are empty, as a click.group it will invoke the 'menu' command within this group.'''
+    '''This function is a click group designated to hold all of the click commands under one entity.'''
     pass
 
 @cli.command()
